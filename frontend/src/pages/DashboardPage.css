@@ -1,0 +1,305 @@
+/* ============================================================
+   Dashboard Layout
+   ============================================================ */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #0f1117;
+  color: #e2e8f0;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+.dashboard-header {
+  background-color: #161b27;
+  border-bottom: 1px solid #1e2535;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.dashboard-header__inner {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.dashboard-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dashboard-header__icon {
+  font-size: 1.5rem;
+  color: #6c63ff;
+}
+
+.dashboard-header__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f0f4ff;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   Main content
+   ============================================================ */
+
+.dashboard-main {
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   Section
+   ============================================================ */
+
+.dashboard-section {
+  background-color: #161b27;
+  border: 1px solid #1e2535;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dashboard-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #1e2535;
+  background-color: #1a2030;
+}
+
+.dashboard-section__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dashboard-section__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dashboard-section__count {
+  background-color: #2d3555;
+  color: #a5b4fc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  line-height: 1.4;
+}
+
+.dashboard-section__body {
+  padding: 1rem 1.5rem;
+}
+
+/* ============================================================
+   Add button
+   ============================================================ */
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #6c63ff;
+  background-color: transparent;
+  color: #6c63ff;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+}
+
+.add-btn:hover {
+  background-color: #6c63ff;
+  color: #fff;
+  border-color: #6c63ff;
+  transform: scale(1.08);
+}
+
+.add-btn:active {
+  transform: scale(0.96);
+}
+
+/* ============================================================
+   Card list
+   ============================================================ */
+
+.card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.list-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background-color: #0f1117;
+  border: 1px solid #1e2535;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+  cursor: default;
+}
+
+.list-card:hover {
+  border-color: #3b4470;
+  background-color: #141926;
+}
+
+.list-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.list-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.list-card__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-card__sub {
+  font-size: 0.8rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-card__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.list-card__badge {
+  display: inline-block;
+  background-color: #1e2d45;
+  color: #7dd3fc;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.list-card__location {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ============================================================
+   State messages
+   ============================================================ */
+
+.state-message {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  justify-content: center;
+}
+
+.state-message--error {
+  color: #f87171;
+}
+
+.state-message--empty {
+  color: #4b5563;
+}
+
+/* ============================================================
+   Spinner
+   ============================================================ */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #2d3555;
+  border-top-color: #6c63ff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .dashboard-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .dashboard-section__body {
+    padding: 0.75rem 1rem;
+  }
+
+  .list-card__badge {
+    display: none;
+  }
+}
