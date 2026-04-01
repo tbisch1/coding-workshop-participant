@@ -8,7 +8,7 @@ export const mockTeams = [
       email: 'sarah.chen@example.com',
       password: 'hashed_placeholder',
       location: 'NA',
-      position: 'Engineering Manager',
+      position: 'Admin',
     },
   },
   {
@@ -20,7 +20,7 @@ export const mockTeams = [
       email: 'marcus.williams@example.com',
       password: 'hashed_placeholder',
       location: 'EU',
-      position: 'Lead Designer',
+      position: 'Admin',
     },
   },
   {
@@ -32,7 +32,7 @@ export const mockTeams = [
       email: 'priya.patel@example.com',
       password: 'hashed_placeholder',
       location: 'APAC',
-      position: 'Data Scientist',
+      position: 'Admin',
     },
   },
   {
@@ -44,7 +44,7 @@ export const mockTeams = [
       email: 'james.okafor@example.com',
       password: 'hashed_placeholder',
       location: 'LATAM',
-      position: 'Senior iOS Engineer',
+      position: 'Admin',
     },
   },
 ];
@@ -55,7 +55,7 @@ export const mockIndividuals = [
     name: 'Sarah Chen',
     email: 'sarah.chen@example.com',
     password: 'hashed_placeholder',
-    position: 'Engineering Manager',
+    position: 'Admin',
     location: 'NA',
   },
   {
@@ -63,7 +63,7 @@ export const mockIndividuals = [
     name: 'Marcus Williams',
     email: 'marcus.williams@example.com',
     password: 'hashed_placeholder',
-    position: 'Lead Designer',
+    position: 'Admin',
     location: 'EU',
   },
   {
@@ -71,7 +71,7 @@ export const mockIndividuals = [
     name: 'Priya Patel',
     email: 'priya.patel@example.com',
     password: 'hashed_placeholder',
-    position: 'Data Scientist',
+    position: 'Employee',
     location: 'APAC',
   },
   {
@@ -79,7 +79,7 @@ export const mockIndividuals = [
     name: 'James Okafor',
     email: 'james.okafor@example.com',
     password: 'hashed_placeholder',
-    position: 'Senior iOS Engineer',
+    position: 'Employee',
     location: 'LATAM',
   },
   {
@@ -87,7 +87,7 @@ export const mockIndividuals = [
     name: 'Elena Rodriguez',
     email: 'elena.rodriguez@example.com',
     password: 'hashed_placeholder',
-    position: 'Backend Engineer',
+    position: 'Employee',
     location: 'NA',
   },
   {
@@ -95,7 +95,7 @@ export const mockIndividuals = [
     name: 'Tom Nakamura',
     email: 'tom.nakamura@example.com',
     password: 'hashed_placeholder',
-    position: 'DevOps Engineer',
+    position: 'Employee',
     location: 'APAC',
   },
 ];

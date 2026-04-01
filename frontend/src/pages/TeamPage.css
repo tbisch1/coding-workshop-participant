@@ -205,6 +205,19 @@
   text-overflow: ellipsis;
 }
 
+.member-card__badge {
+  display: inline-block;
+  background-color: #1e3a5f;
+  color: #7dd3fc;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
 .member-card__remove {
   width: 32px;
   height: 32px;

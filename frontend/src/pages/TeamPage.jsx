@@ -4,9 +4,31 @@ import { mockTeams, mockIndividuals, mockAccomplishments } from '../services/moc
 import './TeamPage.css';
 
 /**
+ * Confirmation dialog for delete actions.
+ */
+function ConfirmDialog({ message, onConfirm, onCancel, loading }) {
+  return (
+    <div className="dialog-backdrop" role="dialog" aria-modal="true">
+      <div className="dialog">
+        <p className="dialog__message">{message}</p>
+        {loading && <p className="dialog__loading">Deleting…</p>}
+        <div className="dialog__actions">
+          <button className="dialog__btn dialog__btn--cancel" onClick={onCancel} disabled={loading}>
+            Cancel
+          </button>
+          <button className="dialog__btn dialog__btn--confirm" onClick={onConfirm} disabled={loading}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
  * A member card in the team members list.
  */
-function MemberCard({ individual, onRemove }) {
+function MemberCard({ individual, onRemove, isTeamLead }) {
   if (!individual) return null;
 
   const initials = individual.name
@@ -19,15 +41,18 @@ function MemberCard({ individual, onRemove }) {
       <div className="member-card__info">
         <span className="member-card__name">{individual.name}</span>
         <span className="member-card__position">{individual.position}</span>
+        {isTeamLead && <span className="member-card__badge">Team Lead</span>}
       </div>
-      <button
-        className="member-card__remove"
-        onClick={() => onRemove(individual)}
-        aria-label={`Remove ${individual.name}`}
-        title="Remove from team"
-      >
-        ×
-      </button>
+      {!isTeamLead && (
+        <button
+          className="member-card__remove"
+          onClick={() => onRemove(individual)}
+          aria-label={`Remove ${individual.name}`}
+          title="Remove from team"
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }
@@ -145,9 +170,19 @@ function TeamPage() {
 
   const [accomplishments, setAccomplishments] = useState(teamAccomplishments);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  // Find team lead's id from mockIndividuals by matching email
+  const teamLeadFromIndividuals = team?.team_lead 
+    ? mockIndividuals.find((i) => i.email === team.team_lead.email)
+    : null;
+  const teamLeadId = teamLeadFromIndividuals?.id;
 
   const memberIds = members.map((m) => m.id);
-  const availableIndividuals = mockIndividuals.filter((i) => !memberIds.includes(i.id));
+  const availableIndividuals = mockIndividuals.filter(
+    (i) => !memberIds.includes(i.id) && i.id !== teamLeadId
+  );
 
   const handleAddMember = (individual) => {
     setMembers([...members, individual]);
@@ -158,7 +193,18 @@ function TeamPage() {
   };
 
   const handleDeleteAccomplishment = (accomplishment) => {
-    setAccomplishments(accomplishments.filter((a) => a.id !== accomplishment.id));
+    setConfirmDialog({
+      message: 'Delete this accomplishment? This action cannot be undone.',
+      onConfirm: async () => {
+        setDeleteLoading(true);
+        try {
+          setAccomplishments(accomplishments.filter((a) => a.id !== accomplishment.id));
+        } finally {
+          setDeleteLoading(false);
+          setConfirmDialog(null);
+        }
+      }
+    });
   };
 
   if (!team) {
@@ -203,7 +249,11 @@ function TeamPage() {
           <ul className="members-list">
             {members.map((member) => member && (
               <li key={member.id}>
-                <MemberCard individual={member} onRemove={handleRemoveMember} />
+                <MemberCard
+                  individual={member}
+                  onRemove={handleRemoveMember}
+                  isTeamLead={member.email === team?.team_lead?.email}
+                />
               </li>
             ))}
           </ul>
@@ -245,6 +295,15 @@ function TeamPage() {
           availableIndividuals={availableIndividuals}
           onAddMember={handleAddMember}
           onClose={() => setShowAddMemberModal(false)}
+        />
+      )}
+
+      {confirmDialog && (
+        <ConfirmDialog
+          message={confirmDialog.message}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog(null)}
+          loading={deleteLoading}
         />
       )}
     </div>
