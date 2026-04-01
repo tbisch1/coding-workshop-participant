@@ -1,14 +1,29 @@
 import json
+from individuals import IndividualService
 
-def handler(event = None, context = None):
+def handler(event: dict = None, context: object = None) -> dict:
     """
-    AWS Lambda Hello World.
+    AWS Lambda handler that returns all individuals.
     """
+
+    service = IndividualService()
+    individuals = service.get_all()
+
+    body = [
+        {
+            "id": individual.id,
+            "name": individual.name,
+            "email": individual.email,
+            "location": individual.location,
+            "position": individual.position,
+        }
+        for individual in individuals
+    ]
 
     return {
         "statusCode": 200,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"message": "Hello, World!"}),
+        "body": json.dumps(body),
     }
 
 if __name__ == "__main__":
