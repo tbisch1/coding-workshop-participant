@@ -243,6 +243,35 @@
   color: #64748b;
 }
 
+/* Team avatar colour variant */
+.team-avatar {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+}
+
+/* Team lead display */
+.team-lead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.team-lead__label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748b;
+}
+
+.team-lead__name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #93c5fd;
+  white-space: nowrap;
+}
+
 /* ============================================================
    State messages
    ============================================================ */

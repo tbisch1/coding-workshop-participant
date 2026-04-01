@@ -8,17 +8,20 @@ import './DashboardPage.css';
  * @param {Object} props.team - The team data object
  */
 function TeamCard({ team }) {
+  const nameInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
+
   return (
     <div className="list-card">
-      <div className="list-card__avatar">
-        {team.organization ? team.organization.charAt(0).toUpperCase() : 'T'}
-      </div>
+      <div className="list-card__avatar team-avatar">{nameInitial}</div>
       <div className="list-card__info">
-        <span className="list-card__name">{team.organization || 'Unnamed Team'}</span>
-        <span className="list-card__sub">{team.location || 'No location'}</span>
+        <span className="list-card__name">{team.name || 'Unnamed Team'}</span>
+        <span className="list-card__sub">{team.organization} &middot; {team.location}</span>
       </div>
       {team.team_lead && (
-        <span className="list-card__badge">Lead: {team.team_lead.name || team.team_lead}</span>
+        <div className="team-lead">
+          <span className="team-lead__label">Lead</span>
+          <span className="team-lead__name">{team.team_lead.name}</span>
+        </div>
       )}
     </div>
   );
