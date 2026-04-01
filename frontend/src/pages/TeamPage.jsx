@@ -58,16 +58,33 @@ function MemberCard({ individual, onRemove, isTeamLead }) {
 }
 
 /**
+ * Modal to view accomplishment details.
+ */
+function AccomplishmentViewModal({ accomplishment, onClose }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="accomplishment-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="accomplishment-modal__close" onClick={onClose} aria-label="Close">×</button>
+        <div className="accomplishment-modal__content">
+          <p className="accomplishment-modal__description">{accomplishment.description}</p>
+          <span className="accomplishment-modal__date">{accomplishment.date}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
  * An accomplishment card with edit/delete actions.
  */
-function AccomplishmentCard({ accomplishment, onEdit, onDelete }) {
+function AccomplishmentCard({ accomplishment, onEdit, onDelete, onView }) {
   return (
-    <div className="accomplishment-card">
+    <div className="accomplishment-card" onClick={() => onView(accomplishment)}>
       <div className="accomplishment-card__content">
         <p className="accomplishment-card__description">{accomplishment.description}</p>
         <span className="accomplishment-card__date">{accomplishment.date}</span>
       </div>
-      <div className="accomplishment-card__actions">
+      <div className="accomplishment-card__actions" onClick={(e) => e.stopPropagation()}>
         <button
           className="card-action-btn card-action-btn--edit"
           onClick={() => onEdit(accomplishment)}
@@ -172,6 +189,7 @@ function TeamPage() {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [viewingAccomplishment, setViewingAccomplishment] = useState(null);
 
   // Find team lead's id from mockIndividuals by matching email
   const teamLeadFromIndividuals = team?.team_lead 
@@ -282,6 +300,7 @@ function TeamPage() {
                     accomplishment={acc}
                     onEdit={() => navigate('/edit-accomplishment', { state: acc })}
                     onDelete={() => handleDeleteAccomplishment(acc)}
+                    onView={() => setViewingAccomplishment(acc)}
                   />
                 </li>
               ))
@@ -304,6 +323,13 @@ function TeamPage() {
           onConfirm={confirmDialog.onConfirm}
           onCancel={() => setConfirmDialog(null)}
           loading={deleteLoading}
+        />
+      )}
+
+      {viewingAccomplishment && (
+        <AccomplishmentViewModal
+          accomplishment={viewingAccomplishment}
+          onClose={() => setViewingAccomplishment(null)}
         />
       )}
     </div>
