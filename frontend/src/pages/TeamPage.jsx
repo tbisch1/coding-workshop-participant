@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockTeams, mockIndividuals, mockAccomplishments } from '../services/mockData';
+import { createAccomplishment, updateAccomplishment } from '../services/api';
 import './TeamPage.css';
 
 /**
@@ -173,6 +174,89 @@ function AddMemberModal({ availableIndividuals, onAddMember, onClose }) {
 }
 
 /**
+ * Form modal to create or update an accomplishment.
+ */
+function AccomplishmentFormModal({ mode, accomplishment, onSubmit, onClose, loading }) {
+  const [formData, setFormData] = useState({
+    description: accomplishment?.description || '',
+    date: accomplishment?.date || ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.description.trim() && formData.date.trim()) {
+      onSubmit(formData);
+    }
+  };
+
+  const isValid = formData.description.trim() && formData.date.trim();
+  const title = mode === 'create' ? 'Add Accomplishment' : 'Edit Accomplishment';
+
+  return (
+    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="accomplishment-form-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal__header">
+          <h3 className="modal__title">{title}</h3>
+          <button className="modal__close" onClick={onClose} aria-label="Close">×</button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="accomplishment-form">
+          <div className="form-group">
+            <label htmlFor="description" className="form-group__label">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="What was accomplished?"
+              className="form-group__input form-group__textarea"
+              rows="4"
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="date" className="form-group__label">Date Accomplished</label>
+            <input
+              id="date"
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className="form-group__input"
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="button"
+              className="form-actions__btn form-actions__btn--cancel"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="form-actions__btn form-actions__btn--submit"
+              disabled={!isValid || loading}
+            >
+              {loading ? 'Submitting…' : (mode === 'create' ? 'Create' : 'Update')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Team detail page showing members and accomplishments.
  */
 function TeamPage() {
@@ -190,6 +274,9 @@ function TeamPage() {
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [viewingAccomplishment, setViewingAccomplishment] = useState(null);
+  const [accomplishmentFormMode, setAccomplishmentFormMode] = useState(null);
+  const [editingAccomplishment, setEditingAccomplishment] = useState(null);
+  const [accomplishmentFormLoading, setAccomplishmentFormLoading] = useState(false);
 
   // Find team lead's id from mockIndividuals by matching email
   const teamLeadFromIndividuals = team?.team_lead 
@@ -223,6 +310,40 @@ function TeamPage() {
         }
       }
     });
+  };
+
+  const handleOpenCreateAccomplishment = () => {
+    setAccomplishmentFormMode('create');
+    setEditingAccomplishment(null);
+  };
+
+  const handleOpenUpdateAccomplishment = (accomplishment) => {
+    setAccomplishmentFormMode('update');
+    setEditingAccomplishment(accomplishment);
+  };
+
+  const handleSubmitAccomplishment = async (formData) => {
+    setAccomplishmentFormLoading(true);
+    try {
+      if (accomplishmentFormMode === 'create') {
+        const newAccomplishment = await createAccomplishment(teamId, formData);
+        setAccomplishments([...accomplishments, newAccomplishment]);
+      } else {
+        const updatedAccomplishment = await updateAccomplishment(editingAccomplishment.id, formData);
+        setAccomplishments(accomplishments.map((a) =>
+          a.id === editingAccomplishment.id ? updatedAccomplishment : a
+        ));
+      }
+      setAccomplishmentFormMode(null);
+      setEditingAccomplishment(null);
+    } finally {
+      setAccomplishmentFormLoading(false);
+    }
+  };
+
+  const handleCloseAccomplishmentForm = () => {
+    setAccomplishmentFormMode(null);
+    setEditingAccomplishment(null);
   };
 
   if (!team) {
@@ -283,7 +404,7 @@ function TeamPage() {
             <span className="column-count">{accomplishments.length}</span>
             <button
               className="add-btn"
-              onClick={() => navigate('/create-accomplishment', { state: team })}
+              onClick={handleOpenCreateAccomplishment}
               title="Add accomplishment"
             >
               +
@@ -298,7 +419,7 @@ function TeamPage() {
                 <li key={acc.id}>
                   <AccomplishmentCard
                     accomplishment={acc}
-                    onEdit={() => navigate('/edit-accomplishment', { state: acc })}
+                    onEdit={() => handleOpenUpdateAccomplishment(acc)}
                     onDelete={() => handleDeleteAccomplishment(acc)}
                     onView={() => setViewingAccomplishment(acc)}
                   />
@@ -330,6 +451,16 @@ function TeamPage() {
         <AccomplishmentViewModal
           accomplishment={viewingAccomplishment}
           onClose={() => setViewingAccomplishment(null)}
+        />
+      )}
+
+      {accomplishmentFormMode && (
+        <AccomplishmentFormModal
+          mode={accomplishmentFormMode}
+          accomplishment={editingAccomplishment}
+          onSubmit={handleSubmitAccomplishment}
+          onClose={handleCloseAccomplishmentForm}
+          loading={accomplishmentFormLoading}
         />
       )}
     </div>

@@ -573,6 +573,122 @@
 }
 
 /* ============================================================
+   Accomplishment Form Modal
+   ============================================================ */
+
+.accomplishment-form-modal {
+  background-color: #1a2030;
+  border: 1px solid #1e2535;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.2s ease-out;
+}
+
+.accomplishment-form {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group__input {
+  background-color: #0f1117;
+  border: 1px solid #1e2535;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  font-family: inherit;
+}
+
+.form-group__input::placeholder {
+  color: #4b5563;
+}
+
+.form-group__input:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+.form-group__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-group__textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.form-actions__btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.form-actions__btn--cancel {
+  background-color: transparent;
+  border: 1px solid #1e2535;
+  color: #94a3b8;
+}
+
+.form-actions__btn--cancel:hover:not(:disabled) {
+  background-color: #0f1117;
+  border-color: #3b4470;
+  color: #e2e8f0;
+}
+
+.form-actions__btn--submit {
+  background-color: #6c63ff;
+  color: #fff;
+}
+
+.form-actions__btn--submit:hover:not(:disabled) {
+  background-color: #7d73ff;
+}
+
+.form-actions__btn--submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-actions__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 
