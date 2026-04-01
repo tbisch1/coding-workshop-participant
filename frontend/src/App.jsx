@@ -7,10 +7,6 @@ import DashboardPage from './pages/DashboardPage';
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
 
-  /**
-   * Navigates to the specified page.
-   * @param {string} page - The page identifier to navigate to
-   */
   const handleNavigate = (page) => {
     setCurrentPage(page);
   };
@@ -19,7 +15,13 @@ function App() {
     return <DashboardPage onNavigate={handleNavigate} />;
   }
 
-  // Placeholder for future creation pages
+  const pageLabels = {
+    'create-team': 'Create Team',
+    'create-individual': 'Create Individual',
+    'edit-team': 'Edit Team',
+    'delete-team': 'Delete Team',
+  };
+
   return (
     <div style={{ padding: '2rem', color: '#e2e8f0', background: '#0f1117', minHeight: '100vh' }}>
       <button
@@ -36,9 +38,7 @@ function App() {
       >
         ← Back
       </button>
-      <h2 style={{ color: '#c7d2fe' }}>
-        {currentPage === 'create-team' ? 'Create Team' : 'Create Individual'}
-      </h2>
+      <h2 style={{ color: '#c7d2fe' }}>{pageLabels[currentPage] || currentPage}</h2>
       <p style={{ color: '#64748b' }}>This page is coming soon.</p>
     </div>
   );

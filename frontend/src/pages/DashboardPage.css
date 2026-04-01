@@ -116,6 +116,33 @@
   padding: 1rem 1.5rem;
 }
 
+/* Search bar */
+.dashboard-section__search {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #1e2535;
+}
+
+.search-input {
+  width: 100%;
+  background-color: #0f1117;
+  border: 1px solid #1e2535;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.875rem;
+  padding: 0.55rem 0.9rem;
+  outline: none;
+  transition: border-color 0.18s ease;
+  box-sizing: border-box;
+}
+
+.search-input::placeholder {
+  color: #4b5563;
+}
+
+.search-input:focus {
+  border-color: #6c63ff;
+}
+
 /* ============================================================
    Add button
    ============================================================ */
@@ -241,6 +268,53 @@
 .list-card__location {
   font-size: 0.75rem;
   color: #64748b;
+}
+
+/* Card action buttons (edit / delete) */
+.card-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.card-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.card-action-btn--edit {
+  color: #93c5fd;
+  border-color: #1e3a5f;
+}
+
+.card-action-btn--edit:hover {
+  background-color: #1e3a5f;
+  border-color: #3b82f6;
+}
+
+.card-action-btn--delete {
+  color: #fca5a5;
+  border-color: #3f1f1f;
+}
+
+.card-action-btn--delete:hover {
+  background-color: #3f1f1f;
+  border-color: #ef4444;
+}
+
+.card-action-btn:active {
+  transform: scale(0.92);
 }
 
 /* Team avatar colour variant */

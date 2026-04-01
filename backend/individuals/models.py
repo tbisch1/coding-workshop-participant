@@ -7,9 +7,8 @@ class Individual:
         self.position = position
 
 class Team: 
-    def __init__(self, name: str, location: str, team_lead: Individual, organization: str):
+    def __init__(self, name: str, team_lead: Individual, organization: str):
         self.name = name
-        self.location = location
         self.team_lead = team_lead
         self.organization = organization
 

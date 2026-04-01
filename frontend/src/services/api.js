@@ -23,6 +23,7 @@ export async function fetchTeams() {
  * @returns {Promise<Array>} Array of individual objects
  */
 export async function fetchIndividuals() {
+    return mockIndividuals;
   try {
     const response = await fetch(`${API_BASE_URL}/api/individuals`);
     if (!response.ok) throw new Error(`Failed to fetch individuals: ${response.statusText}`);

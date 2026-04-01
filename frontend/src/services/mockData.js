@@ -3,7 +3,6 @@ export const mockTeams = [
     id: '1',
     name: 'Alpha Squad',
     organization: 'Technology',
-    location: 'NA',
     team_lead: {
       name: 'Sarah Chen',
       email: 'sarah.chen@example.com',
@@ -16,7 +15,6 @@ export const mockTeams = [
     id: '2',
     name: 'Horizon Team',
     organization: 'Credit Cards',
-    location: 'EU',
     team_lead: {
       name: 'Marcus Williams',
       email: 'marcus.williams@example.com',
@@ -29,7 +27,6 @@ export const mockTeams = [
     id: '3',
     name: 'Apex Group',
     organization: 'Private Banking',
-    location: 'APAC',
     team_lead: {
       name: 'Priya Patel',
       email: 'priya.patel@example.com',
@@ -42,7 +39,6 @@ export const mockTeams = [
     id: '4',
     name: 'Nova Unit',
     organization: 'Technology',
-    location: 'LATAM',
     team_lead: {
       name: 'James Okafor',
       email: 'james.okafor@example.com',
