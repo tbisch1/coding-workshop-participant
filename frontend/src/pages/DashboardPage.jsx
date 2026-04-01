@@ -71,14 +71,17 @@ function TeamCard({ team, onView, onEdit, onDelete }) {
  * A single individual card in the individuals list.
  * @param {Object} props
  * @param {Object} props.individual - The individual data object
+ * @param {Function} props.onView - Callback when viewing the individual
+ * @param {Function} props.onEdit - Callback when editing the individual
+ * @param {Function} props.onDelete - Callback when deleting the individual
  */
-function IndividualCard({ individual, onEdit, onDelete }) {
+function IndividualCard({ individual, onView, onEdit, onDelete }) {
   const initials = individual.name
     ? individual.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
     : '?';
 
   return (
-    <div className="list-card">
+    <div className="list-card" onClick={() => onView(individual)}>
       <div className="list-card__avatar">{initials}</div>
       <div className="list-card__info">
         <span className="list-card__name">{individual.name || 'Unknown'}</span>
@@ -92,7 +95,7 @@ function IndividualCard({ individual, onEdit, onDelete }) {
           <span className="list-card__location">{individual.location}</span>
         )}
       </div>
-      <div className="card-actions">
+      <div className="card-actions" onClick={(e) => e.stopPropagation()}>
         <button
           className="card-action-btn card-action-btn--edit"
           onClick={() => onEdit(individual)}
@@ -311,6 +314,7 @@ function DashboardPage({ onNavigate }) {
             <li key={individual.id}>
               <IndividualCard
                 individual={individual}
+                onView={(i) => onNavigate('view-individual', i)}
                 onEdit={(i) => onNavigate('edit-individual', i)}
                 onDelete={handleDeleteIndividual}
               />

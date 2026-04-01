@@ -29,7 +29,7 @@ function ConfirmDialog({ message, onConfirm, onCancel, loading }) {
 /**
  * A member card in the team members list.
  */
-function MemberCard({ individual, onRemove, isTeamLead }) {
+function MemberCard({ individual, onRemove, isTeamLead, onView }) {
   if (!individual) return null;
 
   const initials = individual.name
@@ -37,7 +37,7 @@ function MemberCard({ individual, onRemove, isTeamLead }) {
     : '?';
 
   return (
-    <div className="member-card">
+    <div className="member-card" onClick={() => onView(individual)}>
       <div className="member-card__avatar">{initials}</div>
       <div className="member-card__info">
         <span className="member-card__name">{individual.name}</span>
@@ -47,7 +47,10 @@ function MemberCard({ individual, onRemove, isTeamLead }) {
       {!isTeamLead && (
         <button
           className="member-card__remove"
-          onClick={() => onRemove(individual)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(individual);
+          }}
           aria-label={`Remove ${individual.name}`}
           title="Remove from team"
         >
@@ -392,6 +395,7 @@ function TeamPage() {
                   individual={member}
                   onRemove={handleRemoveMember}
                   isTeamLead={member.email === team?.team_lead?.email}
+                  onView={() => navigate(`/individual/${member.id}`)}
                 />
               </li>
             ))}

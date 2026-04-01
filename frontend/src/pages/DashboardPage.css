@@ -198,7 +198,7 @@
   background-color: #0f1117;
   border: 1px solid #1e2535;
   transition: border-color 0.18s ease, background-color 0.18s ease;
-  cursor: default;
+  cursor: pointer;
 }
 
 .list-card:hover {

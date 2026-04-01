@@ -159,6 +159,7 @@
   border: 1px solid #1e2535;
   border-radius: 8px;
   transition: border-color 0.15s ease;
+  cursor: pointer;
 }
 
 .member-card:hover {

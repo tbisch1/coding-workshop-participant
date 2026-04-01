@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import DashboardPage from './pages/DashboardPage';
 import TeamPage from './pages/TeamPage';
+import IndividualPage from './pages/IndividualPage';
 
 /**
  * Dashboard wrapper that passes navigate function.
@@ -10,6 +11,8 @@ function DashboardWrapper() {
   const handleNavigate = (page, data) => {
     if (page === 'view-team') {
       navigate(`/team/${data.id}`);
+    } else if (page === 'view-individual') {
+      navigate(`/individual/${data.id}`);
     } else {
       navigate(`/${page}`, { state: data });
     }
@@ -26,6 +29,14 @@ function TeamPageWrapper() {
 }
 
 /**
+ * Individual detail page wrapper.
+ */
+function IndividualPageWrapper() {
+  const navigate = useNavigate();
+  return <IndividualPage />;
+}
+
+/**
  * Root application component with React Router.
  */
 function App() {
@@ -34,6 +45,7 @@ function App() {
       <Routes>
         <Route path="/" element={<DashboardWrapper />} />
         <Route path="/team/:id" element={<TeamPageWrapper />} />
+        <Route path="/individual/:id" element={<IndividualPageWrapper />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

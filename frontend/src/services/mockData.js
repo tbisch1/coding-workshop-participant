@@ -4,6 +4,7 @@ export const mockTeams = [
     name: 'Alpha Squad',
     organization: 'Technology',
     team_lead: {
+      id: '1',
       name: 'Sarah Chen',
       email: 'sarah.chen@example.com',
       password: 'hashed_placeholder',
@@ -16,6 +17,7 @@ export const mockTeams = [
     name: 'Horizon Team',
     organization: 'Credit Cards',
     team_lead: {
+      id: '2',
       name: 'Marcus Williams',
       email: 'marcus.williams@example.com',
       password: 'hashed_placeholder',
@@ -28,6 +30,7 @@ export const mockTeams = [
     name: 'Apex Group',
     organization: 'Private Banking',
     team_lead: {
+      id: '3',
       name: 'Priya Patel',
       email: 'priya.patel@example.com',
       password: 'hashed_placeholder',
@@ -40,6 +43,7 @@ export const mockTeams = [
     name: 'Nova Unit',
     organization: 'Technology',
     team_lead: {
+      id: '4',
       name: 'James Okafor',
       email: 'james.okafor@example.com',
       password: 'hashed_placeholder',

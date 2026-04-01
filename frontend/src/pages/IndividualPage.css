@@ -1,0 +1,353 @@
+/* ============================================================
+   Individual Page Layout
+   ============================================================ */
+
+.individual-page {
+  min-height: 100vh;
+  background-color: #0f1117;
+  color: #e2e8f0;
+  padding: 1.5rem 2rem;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid #6c63ff;
+  color: #6c63ff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.back-btn:hover {
+  background-color: #6c63ff;
+  color: #fff;
+}
+
+/* ============================================================
+   Individual Header
+   ============================================================ */
+
+.individual-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background-color: #161b27;
+  border: 1px solid #1e2535;
+  border-radius: 12px;
+}
+
+.individual-header__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa, #f472b6);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.individual-header__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.individual-header__name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #f0f4ff;
+}
+
+.individual-header__details {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.individual-header__email {
+  font-size: 0.95rem;
+  color: #94a3b8;
+}
+
+.individual-header__position {
+  font-size: 0.95rem;
+  background-color: #1e3a5f;
+  color: #7dd3fc;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.individual-header__location {
+  font-size: 0.95rem;
+  background-color: #2d3555;
+  color: #a5b4fc;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.individual-header__separator {
+  color: #4b5563;
+}
+
+/* ============================================================
+   Teams Section
+   ============================================================ */
+
+.teams-section {
+  background-color: #161b27;
+  border: 1px solid #1e2535;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #1e2535;
+  background-color: #1a2030;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex: 1;
+}
+
+.section-count {
+  background-color: #2d3555;
+  color: #a5b4fc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.no-data-message {
+  padding: 2rem;
+  text-align: center;
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ============================================================
+   Team Table
+   ============================================================ */
+
+.team-table-wrapper {
+  overflow-x: auto;
+}
+
+.team-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #0f1117;
+}
+
+.team-table__head {
+  background-color: #1a2030;
+  border-bottom: 2px solid #1e2535;
+}
+
+.team-table__header-row {
+  height: 3rem;
+}
+
+.team-table__header {
+  padding: 0 1.5rem;
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}
+
+.team-table__header--name {
+  width: 40%;
+}
+
+.team-table__header--org {
+  width: 30%;
+}
+
+.team-table__header--lead {
+  width: 30%;
+}
+
+.team-table__body {
+  background-color: #0f1117;
+}
+
+.team-table__row {
+  height: 3.5rem;
+  border-bottom: 1px solid #1e2535;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.team-table__row:hover {
+  background-color: #161b27;
+}
+
+.team-table__row:last-child {
+  border-bottom: none;
+}
+
+.team-table__cell {
+  padding: 0 1.5rem;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-table__cell--name {
+  font-weight: 600;
+  width: 40%;
+  white-space: normal;
+}
+
+.team-table__cell--org {
+  width: 30%;
+}
+
+.team-table__cell--lead {
+  width: 30%;
+  color: #94a3b8;
+}
+
+.team-table__team-name {
+  display: inline-block;
+  color: #6c63ff;
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+
+.team-table__row:hover .team-table__team-name {
+  color: #7d73ff;
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .individual-page {
+    padding: 1rem;
+  }
+
+  .individual-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .individual-header__avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.1rem;
+  }
+
+  .individual-header__name {
+    font-size: 1.5rem;
+  }
+
+  .individual-header__details {
+    justify-content: center;
+  }
+
+  .teams-section {
+    border-radius: 8px;
+  }
+
+  .section-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .team-table__cell {
+    padding: 0 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .team-table__header {
+    padding: 0 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .team-table__header--name {
+    width: 50%;
+  }
+
+  .team-table__header--org {
+    width: 25%;
+  }
+
+  .team-table__header--lead {
+    width: 25%;
+  }
+
+  .team-table__cell--name {
+    width: 50%;
+  }
+
+  .team-table__cell--org {
+    width: 25%;
+  }
+
+  .team-table__cell--lead {
+    width: 25%;
+  }
+}
+
+@media (max-width: 480px) {
+  .individual-header {
+    padding: 1rem;
+  }
+
+  .individual-header__details {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .individual-header__separator {
+    display: none;
+  }
+
+  .team-table {
+    font-size: 0.8rem;
+  }
+
+  .team-table__cell {
+    padding: 0.5rem;
+  }
+}
