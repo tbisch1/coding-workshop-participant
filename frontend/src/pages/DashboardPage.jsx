@@ -1,17 +1,39 @@
 import { useState, useEffect } from 'react';
-import { fetchTeams, fetchIndividuals } from '../services/api';
+import { fetchTeams, fetchIndividuals, deleteTeam, deleteIndividual } from '../services/api';
 import './DashboardPage.css';
+
+/**
+ * Confirmation dialog overlay.
+ */
+function ConfirmDialog({ message, onConfirm, onCancel, loading }) {
+  return (
+    <div className="dialog-backdrop" role="dialog" aria-modal="true">
+      <div className="dialog">
+        <p className="dialog__message">{message}</p>
+        {loading && <p className="dialog__loading">Deleting…</p>}
+        <div className="dialog__actions">
+          <button className="dialog__btn dialog__btn--cancel" onClick={onCancel} disabled={loading}>
+            Cancel
+          </button>
+          <button className="dialog__btn dialog__btn--confirm" onClick={onConfirm} disabled={loading}>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * A single team card in the teams list.
  * @param {Object} props
  * @param {Object} props.team - The team data object
  */
-function TeamCard({ team, onEdit, onDelete }) {
+function TeamCard({ team, onView, onEdit, onDelete }) {
   const nameInitial = team.name ? team.name.charAt(0).toUpperCase() : 'T';
 
   return (
-    <div className="list-card">
+    <div className="list-card" onClick={() => onView(team)} style={{ cursor: 'pointer' }}>
       <div className="list-card__avatar team-avatar">{nameInitial}</div>
       <div className="list-card__info">
         <span className="list-card__name">{team.name || 'Unnamed Team'}</span>
@@ -23,7 +45,7 @@ function TeamCard({ team, onEdit, onDelete }) {
           <span className="team-lead__name">{team.team_lead.name}</span>
         </div>
       )}
-      <div className="card-actions">
+      <div className="card-actions" onClick={(e) => e.stopPropagation()}>
         <button
           className="card-action-btn card-action-btn--edit"
           onClick={() => onEdit(team)}
@@ -172,6 +194,9 @@ function DashboardPage({ onNavigate }) {
   const [individualsError, setIndividualsError] = useState(null);
   const [individualsSearch, setIndividualsSearch] = useState('');
 
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   useEffect(() => {
     fetchTeams()
       .then(setTeams)
@@ -183,6 +208,42 @@ function DashboardPage({ onNavigate }) {
       .catch((err) => setIndividualsError(err.message))
       .finally(() => setIndividualsLoading(false));
   }, []);
+
+  const handleDeleteTeam = (team) => {
+    setConfirmDialog({
+      message: `Delete team "${team.name}"? This cannot be undone.`,
+      onConfirm: async () => {
+        setDeleteLoading(true);
+        try {
+          await deleteTeam(team.id);
+          setTeams((prev) => prev.filter((t) => t.id !== team.id));
+        } catch (err) {
+          setTeamsError(err.message);
+        } finally {
+          setDeleteLoading(false);
+          setConfirmDialog(null);
+        }
+      },
+    });
+  };
+
+  const handleDeleteIndividual = (individual) => {
+    setConfirmDialog({
+      message: `Delete "${individual.name}"? This cannot be undone.`,
+      onConfirm: async () => {
+        setDeleteLoading(true);
+        try {
+          await deleteIndividual(individual.id);
+          setIndividuals((prev) => prev.filter((i) => i.id !== individual.id));
+        } catch (err) {
+          setIndividualsError(err.message);
+        } finally {
+          setDeleteLoading(false);
+          setConfirmDialog(null);
+        }
+      },
+    });
+  };
 
   const filteredTeams = teams.filter((t) =>
     [t.name, t.organization, t.team_lead?.name]
@@ -198,6 +259,14 @@ function DashboardPage({ onNavigate }) {
 
   return (
     <div className="dashboard">
+      {confirmDialog && (
+        <ConfirmDialog
+          message={confirmDialog.message}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog(null)}
+          loading={deleteLoading}
+        />
+      )}
       <header className="dashboard-header">
         <div className="dashboard-header__inner">
           <div className="dashboard-header__brand">
@@ -221,8 +290,9 @@ function DashboardPage({ onNavigate }) {
             <li key={team.id || index}>
               <TeamCard
                 team={team}
+                onView={(t) => onNavigate('view-team', t)}
                 onEdit={(t) => onNavigate('edit-team', t)}
-                onDelete={(t) => onNavigate('delete-team', t)}
+                onDelete={handleDeleteTeam}
               />
             </li>
           ))}
@@ -242,7 +312,7 @@ function DashboardPage({ onNavigate }) {
               <IndividualCard
                 individual={individual}
                 onEdit={(i) => onNavigate('edit-individual', i)}
-                onDelete={(i) => onNavigate('delete-individual', i)}
+                onDelete={handleDeleteIndividual}
               />
             </li>
           ))}

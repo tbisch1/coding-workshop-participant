@@ -99,3 +99,30 @@ export const mockIndividuals = [
     location: 'APAC',
   },
 ];
+
+export const mockAccomplishments = [
+  {
+    id: '1',
+    teamId: '1',
+    description: 'Successfully launched new payment platform',
+    date: '2024-03-15',
+  },
+  {
+    id: '2',
+    teamId: '1',
+    description: 'Reduced API response time by 40%',
+    date: '2024-02-28',
+  },
+  {
+    id: '3',
+    teamId: '2',
+    description: 'Redesigned mobile app UI',
+    date: '2024-03-10',
+  },
+  {
+    id: '4',
+    teamId: '3',
+    description: 'Implemented machine learning fraud detection',
+    date: '2024-03-01',
+  },
+];

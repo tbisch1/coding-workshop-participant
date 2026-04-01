@@ -19,11 +19,25 @@ export async function fetchTeams() {
 }
 
 /**
- * Fetches all individuals from the backend API, falling back to mock data.
- * @returns {Promise<Array>} Array of individual objects
+ * Deletes a team by ID.
+ * @param {string} id - The team ID to delete
+ * @returns {Promise<void>}
  */
+export async function deleteTeam(id) {
+  const response = await fetch(`${API_BASE_URL}/api/teams/${id}`, { method: 'DELETE' });
+  if (!response.ok) throw new Error(`Failed to delete team: ${response.statusText}`);
+}
+
+/**
+ * Deletes an individual by ID.
+ * @param {string} id - The individual ID to delete
+ * @returns {Promise<void>}
+ */
+export async function deleteIndividual(id) {
+  const response = await fetch(`${API_BASE_URL}/api/individuals/${id}`, { method: 'DELETE' });
+  if (!response.ok) throw new Error(`Failed to delete individual: ${response.statusText}`);
+}
 export async function fetchIndividuals() {
-    return mockIndividuals;
   try {
     const response = await fetch(`${API_BASE_URL}/api/individuals`);
     if (!response.ok) throw new Error(`Failed to fetch individuals: ${response.statusText}`);

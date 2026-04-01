@@ -270,7 +270,88 @@
   color: #64748b;
 }
 
-/* Card action buttons (edit / delete) */
+/* ============================================================
+   Confirm Dialog
+   ============================================================ */
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(2px);
+}
+
+.dialog {
+  background-color: #1a2030;
+  border: 1px solid #1e2535;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.dialog__message {
+  color: #e2e8f0;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.dialog__loading {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.dialog__btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.dialog__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dialog__btn--cancel {
+  background-color: transparent;
+  border-color: #2d3555;
+  color: #94a3b8;
+}
+
+.dialog__btn--cancel:hover:not(:disabled) {
+  background-color: #2d3555;
+  color: #e2e8f0;
+}
+
+.dialog__btn--confirm {
+  background-color: #ef4444;
+  border-color: #ef4444;
+  color: #fff;
+}
+
+.dialog__btn--confirm:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+/* ============================================================
+   Card action buttons (edit / delete) */
 .card-actions {
   display: flex;
   gap: 0.35rem;

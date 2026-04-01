@@ -1,31 +1,51 @@
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import DashboardPage from './pages/DashboardPage';
+import TeamPage from './pages/TeamPage';
 
 /**
- * Root application component with simple state-based navigation.
+ * Dashboard wrapper that passes navigate function.
+ */
+function DashboardWrapper() {
+  const navigate = useNavigate();
+  const handleNavigate = (page, data) => {
+    if (page === 'view-team') {
+      navigate(`/team/${data.id}`);
+    } else {
+      navigate(`/${page}`, { state: data });
+    }
+  };
+  return <DashboardPage onNavigate={handleNavigate} />;
+}
+
+/**
+ * Team detail page wrapper.
+ */
+function TeamPageWrapper() {
+  const navigate = useNavigate();
+  return <TeamPage />;
+}
+
+/**
+ * Root application component with React Router.
  */
 function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<DashboardWrapper />} />
+        <Route path="/team/:id" element={<TeamPageWrapper />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
-  const handleNavigate = (page) => {
-    setCurrentPage(page);
-  };
-
-  if (currentPage === 'dashboard') {
-    return <DashboardPage onNavigate={handleNavigate} />;
-  }
-
-  const pageLabels = {
-    'create-team': 'Create Team',
-    'create-individual': 'Create Individual',
-    'edit-team': 'Edit Team',
-    'delete-team': 'Delete Team',
-  };
-
+function NotFound() {
+  const navigate = useNavigate();
   return (
     <div style={{ padding: '2rem', color: '#e2e8f0', background: '#0f1117', minHeight: '100vh' }}>
       <button
-        onClick={() => handleNavigate('dashboard')}
+        onClick={() => navigate('/')}
         style={{
           background: 'transparent',
           border: '1px solid #6c63ff',
@@ -38,8 +58,8 @@ function App() {
       >
         ← Back
       </button>
-      <h2 style={{ color: '#c7d2fe' }}>{pageLabels[currentPage] || currentPage}</h2>
-      <p style={{ color: '#64748b' }}>This page is coming soon.</p>
+      <h2 style={{ color: '#c7d2fe' }}>Page not found</h2>
+      <p style={{ color: '#64748b' }}>The page you're looking for doesn't exist.</p>
     </div>
   );
 }
