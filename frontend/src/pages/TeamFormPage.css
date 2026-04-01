@@ -1,0 +1,280 @@
+/* ============================================================
+   Team Form Page
+   ============================================================ */
+
+.team-form-page {
+  min-height: 100vh;
+  background-color: #0f1117;
+  color: #e2e8f0;
+  padding: 1.5rem 2rem;
+}
+
+.team-form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid #6c63ff;
+  color: #6c63ff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.back-btn:hover {
+  background-color: #6c63ff;
+  color: #fff;
+}
+
+/* ============================================================
+   Team Form
+   ============================================================ */
+
+.team-form__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 2rem;
+  color: #f0f4ff;
+}
+
+.team-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group__optional {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #94a3b8;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.form-group__input {
+  background-color: #0f1117;
+  border: 1px solid #1e2535;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  font-family: inherit;
+}
+
+.form-group__input::placeholder {
+  color: #4b5563;
+}
+
+.form-group__input:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+}
+
+.form-group__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-group__select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+.form-group__select--multiple {
+  min-height: 120px;
+  padding-right: 1rem;
+  background-image: none;
+}
+
+.form-group__select--multiple option {
+  background-color: #0f1117;
+  color: #e2e8f0;
+  padding: 0.5rem;
+}
+
+.form-group__select--multiple option:checked {
+  background: linear-gradient(#6c63ff, #6c63ff);
+  background-color: #6c63ff;
+}
+
+.form-group__helper {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ============================================================
+   Dropdown with Action Button
+   ============================================================ */
+
+.dropdown-with-action {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.dropdown-with-action .form-group__input {
+  flex: 1;
+}
+
+.dropdown-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-top: 0;
+  border-radius: 8px;
+  border: 1px solid #6c63ff;
+  background-color: transparent;
+  color: #6c63ff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.dropdown-action-btn:hover:not(:disabled) {
+  background-color: #6c63ff;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.dropdown-action-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.dropdown-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Form Actions
+   ============================================================ */
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.form-actions__btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.form-actions__btn--cancel {
+  background-color: transparent;
+  border: 1px solid #1e2535;
+  color: #94a3b8;
+}
+
+.form-actions__btn--cancel:hover:not(:disabled) {
+  background-color: #0f1117;
+  border-color: #3b4470;
+  color: #e2e8f0;
+}
+
+.form-actions__btn--submit {
+  background-color: #6c63ff;
+  color: #fff;
+}
+
+.form-actions__btn--submit:hover:not(:disabled) {
+  background-color: #7d73ff;
+}
+
+.form-actions__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Error Message
+   ============================================================ */
+
+.error-message {
+  background-color: #3f1f1f;
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  color: #fca5a5;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .team-form-page {
+    padding: 1rem;
+  }
+
+  .team-form-container {
+    max-width: 100%;
+  }
+
+  .team-form__title {
+    font-size: 1.5rem;
+  }
+
+  .form-group {
+    gap: 0.4rem;
+  }
+
+  .dropdown-with-action {
+    flex-direction: column;
+  }
+
+  .dropdown-action-btn {
+    width: 100%;
+    height: 40px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions__btn {
+    width: 100%;
+  }
+}

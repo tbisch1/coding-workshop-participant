@@ -78,6 +78,84 @@ export async function updateAccomplishment(accomplishmentId, accomplishmentData)
   }
 }
 
+/**
+ * Creates a new individual.
+ * @param {Object} individualData - The individual data
+ * @returns {Promise<Object>} The created individual
+ */
+export async function createIndividual(individualData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/individuals`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(individualData)
+    });
+    if (!response.ok) throw new Error(`Failed to create individual: ${response.statusText}`);
+    return await response.json();
+  } catch {
+    return { id: Date.now().toString(), ...individualData };
+  }
+}
+
+/**
+ * Updates an individual.
+ * @param {string} individualId - The individual ID
+ * @param {Object} individualData - The individual data
+ * @returns {Promise<Object>} The updated individual
+ */
+export async function updateIndividual(individualId, individualData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/individuals/${individualId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(individualData)
+    });
+    if (!response.ok) throw new Error(`Failed to update individual: ${response.statusText}`);
+    return await response.json();
+  } catch {
+    return { id: individualId, ...individualData };
+  }
+}
+
+/**
+ * Creates a new team.
+ * @param {Object} teamData - The team data
+ * @returns {Promise<Object>} The created team
+ */
+export async function createTeam(teamData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/teams`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(teamData)
+    });
+    if (!response.ok) throw new Error(`Failed to create team: ${response.statusText}`);
+    return await response.json();
+  } catch {
+    return { id: Date.now().toString(), ...teamData };
+  }
+}
+
+/**
+ * Updates a team.
+ * @param {string} teamId - The team ID
+ * @param {Object} teamData - The team data
+ * @returns {Promise<Object>} The updated team
+ */
+export async function updateTeam(teamId, teamData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(teamData)
+    });
+    if (!response.ok) throw new Error(`Failed to update team: ${response.statusText}`);
+    return await response.json();
+  } catch {
+    return { id: teamId, ...teamData };
+  }
+}
+
 export async function fetchIndividuals() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/individuals`);

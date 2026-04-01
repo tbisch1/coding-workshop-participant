@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import DashboardPage from './pages/DashboardPage';
 import TeamPage from './pages/TeamPage';
 import IndividualPage from './pages/IndividualPage';
+import TeamFormPage from './pages/TeamFormPage';
+import IndividualFormPage from './pages/IndividualFormPage';
 
 /**
  * Dashboard wrapper that passes navigate function.
@@ -13,6 +15,14 @@ function DashboardWrapper() {
       navigate(`/team/${data.id}`);
     } else if (page === 'view-individual') {
       navigate(`/individual/${data.id}`);
+    } else if (page === 'create-team') {
+      navigate('/team');
+    } else if (page === 'create-individual') {
+      navigate('/individual');
+    } else if (page === 'edit-team') {
+      navigate(`/team/${data.id}/edit`);
+    } else if (page === 'edit-individual') {
+      navigate(`/individual/${data.id}/edit`);
     } else {
       navigate(`/${page}`, { state: data });
     }
@@ -45,7 +55,11 @@ function App() {
       <Routes>
         <Route path="/" element={<DashboardWrapper />} />
         <Route path="/team/:id" element={<TeamPageWrapper />} />
+        <Route path="/team" element={<TeamFormPage />} />
+        <Route path="/team/:id/edit" element={<TeamFormPage />} />
         <Route path="/individual/:id" element={<IndividualPageWrapper />} />
+        <Route path="/individual" element={<IndividualFormPage />} />
+        <Route path="/individual/:id/edit" element={<IndividualFormPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
