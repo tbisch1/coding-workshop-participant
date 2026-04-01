@@ -113,10 +113,10 @@ export function IndividualFormContent({ mode = 'create', individual, onSubmit, l
             className="form-group__input form-group__select"
             disabled={loading}
           >
-            <option value="NA">North America</option>
-            <option value="LATAM">Latin America</option>
-            <option value="APAC">Asia Pacific</option>
-            <option value="EU">Europe</option>
+            <option value="NA">NA</option>
+            <option value="LATAM">LATAM</option>
+            <option value="APAC">APAC</option>
+            <option value="EU">EU</option>
           </select>
         </div>
 
