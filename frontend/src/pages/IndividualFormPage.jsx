@@ -35,10 +35,9 @@ function IndividualFormPage() {
   if (dataLoading) {
     return (
       <div className="individual-form-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading…</p>
+        <div className="individual-form-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading…</p>
+        </div>
       </div>
     );
   }
@@ -46,10 +45,9 @@ function IndividualFormPage() {
   if (mode === 'update' && !individual) {
     return (
       <div className="individual-form-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Individual not found.</p>
+        <div className="individual-form-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>Individual not found.</p>
+        </div>
       </div>
     );
   }
@@ -74,9 +72,7 @@ function IndividualFormPage() {
 
   return (
     <div className="individual-form-page">
-      <button className="back-btn" onClick={() => navigate('/')}>
-        ← Back
-      </button>
+      <div className="individual-form-page__content">
 
       <div className="individual-form-container">
         <IndividualFormContent
@@ -91,6 +87,7 @@ function IndividualFormPage() {
             {error}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

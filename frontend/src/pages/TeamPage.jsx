@@ -375,10 +375,9 @@ function TeamPage() {
   if (loading) {
     return (
       <div className="team-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading team...</p>
+        <div className="team-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading team...</p>
+        </div>
       </div>
     );
   }
@@ -386,19 +385,16 @@ function TeamPage() {
   if (!team || error) {
     return (
       <div className="team-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>{error ? `Error: ${error}` : 'Team not found.'}</p>
+        <div className="team-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>{error ? `Error: ${error}` : 'Team not found.'}</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="team-page">
-      <button className="back-btn" onClick={() => navigate('/')}>
-        ← Back
-      </button>
+      <div className="team-page__content">
 
       <header className="team-header">
         <div className="team-header__title-row">
@@ -510,6 +506,7 @@ function TeamPage() {
           loading={accomplishmentFormLoading}
         />
       )}
+      </div>
     </div>
   );
 }

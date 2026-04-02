@@ -270,14 +270,6 @@ function DashboardPage({ onNavigate }) {
           loading={deleteLoading}
         />
       )}
-      <header className="dashboard-header">
-        <div className="dashboard-header__inner">
-          <div className="dashboard-header__brand">
-            <span className="dashboard-header__icon">⬡</span>
-            <h1 className="dashboard-header__title">Team Management</h1>
-          </div>
-        </div>
-      </header>
 
       <main className="dashboard-main">
         <Section

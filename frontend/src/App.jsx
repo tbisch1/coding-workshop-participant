@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
 import DashboardPage from './pages/DashboardPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import TeamPage from './pages/TeamPage';
 import IndividualPage from './pages/IndividualPage';
 import TeamFormPage from './pages/TeamFormPage';
@@ -52,8 +54,10 @@ function IndividualPageWrapper() {
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path="/" element={<DashboardWrapper />} />
+        <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/team/:id" element={<TeamPageWrapper />} />
         <Route path="/team" element={<TeamFormPage />} />
         <Route path="/team/:id/edit" element={<TeamFormPage />} />

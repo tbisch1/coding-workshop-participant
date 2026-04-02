@@ -123,10 +123,9 @@ function TeamFormPage() {
   if (dataLoading) {
     return (
       <div className="team-form-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading…</p>
+        <div className="team-form-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading…</p>
+        </div>
       </div>
     );
   }
@@ -134,10 +133,9 @@ function TeamFormPage() {
   if (mode === 'update' && dataNotFound) {
     return (
       <div className="team-form-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Team not found.</p>
+        <div className="team-form-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>Team not found.</p>
+        </div>
       </div>
     );
   }
@@ -146,9 +144,7 @@ function TeamFormPage() {
 
   return (
     <div className="team-form-page">
-      <button className="back-btn" onClick={() => navigate('/')}>
-        ← Back
-      </button>
+      <div className="team-form-page__content">
 
       <div className="team-form-container">
         <h1 className="team-form__title">{title}</h1>
@@ -272,6 +268,7 @@ function TeamFormPage() {
             </div>
           )}
         </form>
+      </div>
       </div>
 
       {showIndividualModal && (

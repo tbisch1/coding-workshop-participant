@@ -95,10 +95,9 @@ function IndividualPage() {
   if (loading) {
     return (
       <div className="individual-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading individual...</p>
+        <div className="individual-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading individual...</p>
+        </div>
       </div>
     );
   }
@@ -106,19 +105,16 @@ function IndividualPage() {
   if (!individual || error) {
     return (
       <div className="individual-page">
-        <button className="back-btn" onClick={() => navigate('/')}>
-          ← Back
-        </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>{error ? `Error: ${error}` : 'Individual not found.'}</p>
+        <div className="individual-page__content">
+          <p style={{ color: '#64748b', marginTop: '2rem' }}>{error ? `Error: ${error}` : 'Individual not found.'}</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="individual-page">
-      <button className="back-btn" onClick={() => navigate('/')}>
-        ← Back
-      </button>
+      <div className="individual-page__content">
 
       <IndividualInfo individual={individual} onEdit={() => navigate(`/individual/${individualId}/edit`)} />
 
@@ -153,6 +149,7 @@ function IndividualPage() {
           </div>
         )}
       </section>
+      </div>
     </div>
   );
 }
