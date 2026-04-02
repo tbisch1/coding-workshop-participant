@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockIndividuals } from '../services/mockData';
-import { createIndividual, updateIndividual } from '../services/api';
+import { fetchIndividual, createIndividual, updateIndividual } from '../services/api';
 import { IndividualFormContent } from '../components/IndividualFormContent';
 import './IndividualFormPage.css';
 
@@ -12,9 +11,37 @@ function IndividualFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const mode = id ? 'update' : 'create';
-  const individual = id ? mockIndividuals.find((i) => i.id === id) : null;
+  const [individual, setIndividual] = useState(null);
+  const [dataLoading, setDataLoading] = useState(!!id);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!id) return;
+    async function load() {
+      setDataLoading(true);
+      try {
+        const data = await fetchIndividual(id);
+        setIndividual(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setDataLoading(false);
+      }
+    }
+    load();
+  }, [id]);
+
+  if (dataLoading) {
+    return (
+      <div className="individual-form-page">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          ← Back
+        </button>
+        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading…</p>
+      </div>
+    );
+  }
 
   if (mode === 'update' && !individual) {
     return (

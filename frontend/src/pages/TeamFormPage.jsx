@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockTeams, mockIndividuals } from '../services/mockData';
-import { createTeam, updateTeam } from '../services/api';
+import { fetchIndividuals, fetchTeam, createTeam, updateTeam } from '../services/api';
 import { IndividualFormModal } from '../components/IndividualFormModal';
 import './TeamFormPage.css';
 
@@ -12,19 +11,48 @@ function TeamFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const mode = id ? 'update' : 'create';
-  const team = id ? mockTeams.find((t) => t.id === id) : null;
 
-  const [individuals, setIndividuals] = useState(mockIndividuals);
+  const [individuals, setIndividuals] = useState([]);
   const [showIndividualModal, setShowIndividualModal] = useState(null);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [dataNotFound, setDataNotFound] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
-    name: team?.name || '',
-    organization: team?.organization || 'Technology',
-    team_lead_id: team?.team_lead?.id || '',
+    name: '',
+    organization: 'Technology',
+    team_lead_id: '',
     member_ids: [],
   });
+
+  useEffect(() => {
+    async function loadData() {
+      setDataLoading(true);
+      try {
+        const [individualsData, teamData] = await Promise.all([
+          fetchIndividuals(),
+          id ? fetchTeam(id) : Promise.resolve(null),
+        ]);
+        setIndividuals(individualsData);
+        if (id && !teamData) {
+          setDataNotFound(true);
+        } else if (teamData) {
+          setFormData({
+            name: teamData.name || '',
+            organization: teamData.organization || 'Technology',
+            team_lead_id: teamData.team_lead?.id || '',
+            member_ids: teamData.members?.map((m) => m.id) || [],
+          });
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setDataLoading(false);
+      }
+    }
+    loadData();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,7 +120,18 @@ function TeamFormPage() {
     }
   };
 
-  if (mode === 'update' && !team) {
+  if (dataLoading) {
+    return (
+      <div className="team-form-page">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          ← Back
+        </button>
+        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading…</p>
+      </div>
+    );
+  }
+
+  if (mode === 'update' && dataNotFound) {
     return (
       <div className="team-form-page">
         <button className="back-btn" onClick={() => navigate('/')}>
@@ -104,9 +143,6 @@ function TeamFormPage() {
   }
 
   const title = mode === 'create' ? 'Create Team' : 'Update Team';
-  const teamLeadIndividual = formData.team_lead_id
-    ? individuals.find(i => i.id === formData.team_lead_id)
-    : null;
 
   return (
     <div className="team-form-page">

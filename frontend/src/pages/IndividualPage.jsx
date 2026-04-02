@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockTeams, mockIndividuals } from '../services/mockData';
+import { fetchIndividual, fetchTeamsForIndividual } from '../services/api';
 import './IndividualPage.css';
 
 /**
  * Displays basic information about an individual.
  */
-function IndividualInfo({ individual }) {
+function IndividualInfo({ individual, onEdit }) {
   const initials = individual.name
     ? individual.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
     : '?';
@@ -15,7 +15,16 @@ function IndividualInfo({ individual }) {
     <div className="individual-header">
       <div className="individual-header__avatar">{initials}</div>
       <div className="individual-header__info">
-        <h1 className="individual-header__name">{individual.name}</h1>
+        <div className="individual-header__title-row">
+          <h1 className="individual-header__name">{individual.name}</h1>
+          <button
+            className="individual-header__edit-btn"
+            onClick={onEdit}
+            title="Edit individual"
+          >
+            Edit
+          </button>
+        </div>
         <div className="individual-header__details">
           <span className="individual-header__email">{individual.email}</span>
           <span className="individual-header__separator">•</span>
@@ -53,25 +62,54 @@ function TeamRow({ team, onTeamClick }) {
 function IndividualPage() {
   const { id: individualId } = useParams();
   const navigate = useNavigate();
-  const individual = mockIndividuals.find((i) => i.id === individualId);
+  const [individual, setIndividual] = useState(null);
+  const [individualsTeams, setIndividualsTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Find all teams this individual is part of
-  const individualsTeams = mockTeams.filter((team) => {
-    // Check if individual is the team lead
-    if (team.team_lead?.email === individual?.email) {
-      return true;
+  // Fetch individual data and their teams on mount or when individualId changes
+  useEffect(() => {
+    const loadIndividualAndTeams = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const fetchedIndividual = await fetchIndividual(individualId);
+        setIndividual(fetchedIndividual);
+        
+        if (fetchedIndividual) {
+          const teams = await fetchTeamsForIndividual(individualId);
+          setIndividualsTeams(teams || []);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (individualId) {
+      loadIndividualAndTeams();
     }
-    // In a real app, you'd check team members array here
-    return false;
-  });
+  }, [individualId]);
 
-  if (!individual) {
+  if (loading) {
     return (
       <div className="individual-page">
         <button className="back-btn" onClick={() => navigate('/')}>
           ← Back
         </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Individual not found.</p>
+        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading individual...</p>
+      </div>
+    );
+  }
+
+  if (!individual || error) {
+    return (
+      <div className="individual-page">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          ← Back
+        </button>
+        <p style={{ color: '#64748b', marginTop: '2rem' }}>{error ? `Error: ${error}` : 'Individual not found.'}</p>
       </div>
     );
   }
@@ -82,7 +120,7 @@ function IndividualPage() {
         ← Back
       </button>
 
-      <IndividualInfo individual={individual} />
+      <IndividualInfo individual={individual} onEdit={() => navigate(`/individual/${individualId}/edit`)} />
 
       <section className="teams-section">
         <div className="section-header">

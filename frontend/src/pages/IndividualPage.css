@@ -64,11 +64,34 @@
   gap: 0.5rem;
 }
 
+.individual-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .individual-header__name {
   font-size: 2rem;
   font-weight: 700;
   margin: 0;
   color: #f0f4ff;
+}
+
+.individual-header__edit-btn {
+  background: transparent;
+  border: 1px solid #6c63ff;
+  color: #6c63ff;
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.individual-header__edit-btn:hover {
+  background-color: #6c63ff;
+  color: #fff;
 }
 
 .individual-header__details {

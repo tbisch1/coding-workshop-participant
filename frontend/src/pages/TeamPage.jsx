@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockTeams, mockIndividuals, mockAccomplishments } from '../services/mockData';
-import { createAccomplishment, updateAccomplishment } from '../services/api';
+import { fetchTeam, fetchIndividuals, fetchAccomplishments, createAccomplishment, updateAccomplishment, deleteAccomplishment, addMemberToTeam, removeMemberFromTeam } from '../services/api';
 import './TeamPage.css';
 
 /**
@@ -265,14 +264,40 @@ function AccomplishmentFormModal({ mode, accomplishment, onSubmit, onClose, load
 function TeamPage() {
   const { id: teamId } = useParams();
   const navigate = useNavigate();
-  const team = mockTeams.find((t) => t.id === teamId);
-  const teamAccomplishments = mockAccomplishments.filter((a) => a.teamId === teamId);
+  const [team, setTeam] = useState(null);
+  const [members, setMembers] = useState([]);
+  const [accomplishments, setAccomplishments] = useState([]);
+  const [allIndividuals, setAllIndividuals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [members, setMembers] = useState([
-    team?.team_lead || mockIndividuals.find((i) => i.id === team?.team_lead?.id),
-  ].filter(Boolean));
-
-  const [accomplishments, setAccomplishments] = useState(teamAccomplishments);
+  // Fetch team, accomplishments, and all individuals in parallel
+  useEffect(() => {
+    if (!teamId) return;
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const [fetchedTeam, fetchedAccomplishments, fetchedIndividuals] = await Promise.all([
+          fetchTeam(teamId),
+          fetchAccomplishments(teamId),
+          fetchIndividuals(),
+        ]);
+        setTeam(fetchedTeam);
+        setAccomplishments(fetchedAccomplishments);
+        setAllIndividuals(fetchedIndividuals);
+        // Build member list: team lead first, then remaining members
+        const lead = fetchedTeam?.team_lead;
+        const otherMembers = fetchedTeam?.members?.filter((m) => m.id !== lead?.id) ?? [];
+        setMembers(lead ? [lead, ...otherMembers] : otherMembers);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [teamId]);
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -281,22 +306,19 @@ function TeamPage() {
   const [editingAccomplishment, setEditingAccomplishment] = useState(null);
   const [accomplishmentFormLoading, setAccomplishmentFormLoading] = useState(false);
 
-  // Find team lead's id from mockIndividuals by matching email
-  const teamLeadFromIndividuals = team?.team_lead 
-    ? mockIndividuals.find((i) => i.email === team.team_lead.email)
-    : null;
-  const teamLeadId = teamLeadFromIndividuals?.id;
-
+  const teamLeadId = team?.team_lead?.id;
   const memberIds = members.map((m) => m.id);
-  const availableIndividuals = mockIndividuals.filter(
+  const availableIndividuals = allIndividuals.filter(
     (i) => !memberIds.includes(i.id) && i.id !== teamLeadId
   );
 
-  const handleAddMember = (individual) => {
+  const handleAddMember = async (individual) => {
+    await addMemberToTeam(teamId, individual.id);
     setMembers([...members, individual]);
   };
 
-  const handleRemoveMember = (individual) => {
+  const handleRemoveMember = async (individual) => {
+    await removeMemberFromTeam(teamId, individual.id);
     setMembers(members.filter((m) => m.id !== individual.id));
   };
 
@@ -306,6 +328,7 @@ function TeamPage() {
       onConfirm: async () => {
         setDeleteLoading(true);
         try {
+          await deleteAccomplishment(accomplishment.id);
           setAccomplishments(accomplishments.filter((a) => a.id !== accomplishment.id));
         } finally {
           setDeleteLoading(false);
@@ -349,13 +372,24 @@ function TeamPage() {
     setEditingAccomplishment(null);
   };
 
-  if (!team) {
+  if (loading) {
     return (
       <div className="team-page">
         <button className="back-btn" onClick={() => navigate('/')}>
           ← Back
         </button>
-        <p style={{ color: '#64748b', marginTop: '2rem' }}>Team not found.</p>
+        <p style={{ color: '#64748b', marginTop: '2rem' }}>Loading team...</p>
+      </div>
+    );
+  }
+
+  if (!team || error) {
+    return (
+      <div className="team-page">
+        <button className="back-btn" onClick={() => navigate('/')}>
+          ← Back
+        </button>
+        <p style={{ color: '#64748b', marginTop: '2rem' }}>{error ? `Error: ${error}` : 'Team not found.'}</p>
       </div>
     );
   }
@@ -367,7 +401,16 @@ function TeamPage() {
       </button>
 
       <header className="team-header">
-        <h1 className="team-header__name">{team.name}</h1>
+        <div className="team-header__title-row">
+          <h1 className="team-header__name">{team.name}</h1>
+          <button
+            className="team-header__edit-btn"
+            onClick={() => navigate(`/team/${teamId}/edit`)}
+            title="Edit team"
+          >
+            Edit
+          </button>
+        </div>
         <div className="team-header__meta">
           <span className="team-header__org">{team.organization}</span>
           <span className="team-header__lead">Led by {team.team_lead.name}</span>

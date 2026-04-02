@@ -1,168 +1,284 @@
-import { mockTeams, mockIndividuals, mockAccomplishments } from './mockData';
+/**
+ * api.js
+ *
+ * API abstraction layer. Each function attempts the real backend first.
+ * On failure it falls back to localDb.js which operates on an in-memory
+ * copy of database.json.
+ *
+ * All functions return objects in the resolved shape (foreign keys
+ * replaced with nested objects), regardless of whether the real API
+ * or the local fallback was used.
+ */
+
+import { localDb } from './localDb';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+async function apiFetch(path, options = {}) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+  return response.json();
+}
+
+// ─── Individuals ──────────────────────────────────────────────────────────────
+
 /**
- * Fetches all teams from the backend API, falling back to mock data.
- * @returns {Promise<Array>} Array of team objects
+ * Fetches all individuals.
+ * @returns {Promise<Array>}
  */
-export async function fetchTeams() {
-  return mockTeams;
+export async function fetchIndividuals() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/teams`);
-    if (!response.ok) throw new Error(`Failed to fetch teams: ${response.statusText}`);
-    const data = await response.json();
-    return Array.isArray(data) ? data : [];
+    const data = await apiFetch('/api/individuals');
+    return Array.isArray(data) ? data : localDb.getIndividuals();
   } catch {
-    return mockTeams;
+    return localDb.getIndividuals();
   }
 }
 
 /**
- * Deletes a team by ID.
- * @param {string} id - The team ID to delete
- * @returns {Promise<void>}
+ * Fetches a single individual by ID.
+ * @param {string} id
+ * @returns {Promise<Object>}
  */
-export async function deleteTeam(id) {
-  const response = await fetch(`${API_BASE_URL}/api/teams/${id}`, { method: 'DELETE' });
-  if (!response.ok) throw new Error(`Failed to delete team: ${response.statusText}`);
-}
-
-/**
- * Deletes an individual by ID.
- * @param {string} id - The individual ID to delete
- * @returns {Promise<void>}
- */
-export async function deleteIndividual(id) {
-  const response = await fetch(`${API_BASE_URL}/api/individuals/${id}`, { method: 'DELETE' });
-  if (!response.ok) throw new Error(`Failed to delete individual: ${response.statusText}`);
-}
-
-/**
- * Creates a new accomplishment for a team.
- * @param {string} teamId - The team ID
- * @param {Object} accomplishmentData - The accomplishment data (description, date)
- * @returns {Promise<Object>} The created accomplishment
- */
-export async function createAccomplishment(teamId, accomplishmentData) {
+export async function fetchIndividual(id) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}/accomplishments`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(accomplishmentData)
-    });
-    if (!response.ok) throw new Error(`Failed to create accomplishment: ${response.statusText}`);
-    return await response.json();
+    return await apiFetch(`/api/individuals/${id}`);
   } catch {
-    return { id: Date.now().toString(), teamId, ...accomplishmentData };
-  }
-}
-
-/**
- * Updates an existing accomplishment.
- * @param {string} accomplishmentId - The accomplishment ID
- * @param {Object} accomplishmentData - The accomplishment data (description, date)
- * @returns {Promise<Object>} The updated accomplishment
- */
-export async function updateAccomplishment(accomplishmentId, accomplishmentData) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/accomplishments/${accomplishmentId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(accomplishmentData)
-    });
-    if (!response.ok) throw new Error(`Failed to update accomplishment: ${response.statusText}`);
-    return await response.json();
-  } catch {
-    return { id: accomplishmentId, ...accomplishmentData };
+    return localDb.getIndividual(id);
   }
 }
 
 /**
  * Creates a new individual.
- * @param {Object} individualData - The individual data
- * @returns {Promise<Object>} The created individual
+ * @param {Object} data - { name, email, password, location, position }
+ * @returns {Promise<Object>}
  */
-export async function createIndividual(individualData) {
+export async function createIndividual(data) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/individuals`, {
+    return await apiFetch('/api/individuals', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(individualData)
+      body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`Failed to create individual: ${response.statusText}`);
-    return await response.json();
   } catch {
-    return { id: Date.now().toString(), ...individualData };
+    return localDb.createIndividual(data);
   }
 }
 
 /**
- * Updates an individual.
- * @param {string} individualId - The individual ID
- * @param {Object} individualData - The individual data
- * @returns {Promise<Object>} The updated individual
+ * Updates an existing individual.
+ * @param {string} id
+ * @param {Object} data - { name, email, password, location, position }
+ * @returns {Promise<Object>}
  */
-export async function updateIndividual(individualId, individualData) {
+export async function updateIndividual(id, data) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/individuals/${individualId}`, {
+    return await apiFetch(`/api/individuals/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(individualData)
+      body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`Failed to update individual: ${response.statusText}`);
-    return await response.json();
   } catch {
-    return { id: individualId, ...individualData };
+    return localDb.updateIndividual(id, data);
+  }
+}
+
+/**
+ * Deletes an individual by ID.
+ * @param {string} id
+ * @returns {Promise<void>}
+ */
+export async function deleteIndividual(id) {
+  try {
+    await apiFetch(`/api/individuals/${id}`, { method: 'DELETE' });
+  } catch {
+    localDb.deleteIndividual(id);
+  }
+}
+
+// ─── Teams ────────────────────────────────────────────────────────────────────
+
+/**
+ * Fetches all teams (with team_lead and members resolved).
+ * @returns {Promise<Array>}
+ */
+export async function fetchTeams() {
+  try {
+    const data = await apiFetch('/api/teams');
+    return Array.isArray(data) ? data : localDb.getTeams();
+  } catch {
+    return localDb.getTeams();
+  }
+}
+
+/**
+ * Fetches a single team by ID (with team_lead and members resolved).
+ * @param {string} id
+ * @returns {Promise<Object>}
+ */
+export async function fetchTeam(id) {
+  try {
+    return await apiFetch(`/api/teams/${id}`);
+  } catch {
+    return localDb.getTeam(id);
   }
 }
 
 /**
  * Creates a new team.
- * @param {Object} teamData - The team data
- * @returns {Promise<Object>} The created team
+ * @param {Object} data - { name, organization, team_lead_id, member_ids }
+ * @returns {Promise<Object>}
  */
-export async function createTeam(teamData) {
+export async function createTeam(data) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/teams`, {
+    return await apiFetch('/api/teams', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(teamData)
+      body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`Failed to create team: ${response.statusText}`);
-    return await response.json();
   } catch {
-    return { id: Date.now().toString(), ...teamData };
+    return localDb.createTeam(data);
   }
 }
 
 /**
- * Updates a team.
- * @param {string} teamId - The team ID
- * @param {Object} teamData - The team data
- * @returns {Promise<Object>} The updated team
+ * Updates an existing team.
+ * @param {string} id
+ * @param {Object} data - { name, organization, team_lead_id, member_ids }
+ * @returns {Promise<Object>}
  */
-export async function updateTeam(teamId, teamData) {
+export async function updateTeam(id, data) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
+    return await apiFetch(`/api/teams/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(teamData)
+      body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`Failed to update team: ${response.statusText}`);
-    return await response.json();
   } catch {
-    return { id: teamId, ...teamData };
+    return localDb.updateTeam(id, data);
   }
 }
 
-export async function fetchIndividuals() {
+/**
+ * Deletes a team by ID.
+ * @param {string} id
+ * @returns {Promise<void>}
+ */
+export async function deleteTeam(id) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/individuals`);
-    if (!response.ok) throw new Error(`Failed to fetch individuals: ${response.statusText}`);
-    const data = await response.json();
-    return Array.isArray(data) ? data : [];
+    await apiFetch(`/api/teams/${id}`, { method: 'DELETE' });
   } catch {
-    return mockIndividuals;
+    localDb.deleteTeam(id);
+  }
+}
+
+// ─── Team Members ─────────────────────────────────────────────────────────────
+
+/**
+ * Adds an individual to a team (creates a TeamIndividual record).
+ * @param {string} team_id
+ * @param {string} individual_id
+ * @returns {Promise<Object>} The updated team
+ */
+export async function addMemberToTeam(team_id, individual_id) {
+  try {
+    return await apiFetch(`/api/teams/${team_id}/members`, {
+      method: 'POST',
+      body: JSON.stringify({ individual_id }),
+    });
+  } catch {
+    return localDb.addMemberToTeam(team_id, individual_id);
+  }
+}
+
+/**
+ * Removes an individual from a team (deletes the TeamIndividual record).
+ * @param {string} team_id
+ * @param {string} individual_id
+ * @returns {Promise<Object>} The updated team
+ */
+export async function removeMemberFromTeam(team_id, individual_id) {
+  try {
+    return await apiFetch(`/api/teams/${team_id}/members/${individual_id}`, {
+      method: 'DELETE',
+    });
+  } catch {
+    return localDb.removeMemberFromTeam(team_id, individual_id);
+  }
+}
+
+/**
+ * Fetches all teams an individual belongs to (as lead or member).
+ * @param {string} individual_id
+ * @returns {Promise<Array>}
+ */
+export async function fetchTeamsForIndividual(individual_id) {
+  try {
+    return await apiFetch(`/api/individuals/${individual_id}/teams`);
+  } catch {
+    return localDb.getTeamsForIndividual(individual_id);
+  }
+}
+
+// ─── Accomplishments ──────────────────────────────────────────────────────────
+
+/**
+ * Fetches all accomplishments for a team.
+ * @param {string} team_id
+ * @returns {Promise<Array>}
+ */
+export async function fetchAccomplishments(team_id) {
+  try {
+    return await apiFetch(`/api/teams/${team_id}/accomplishments`);
+  } catch {
+    return localDb.getAccomplishments(team_id);
+  }
+}
+
+/**
+ * Creates a new accomplishment for a team.
+ * @param {string} team_id
+ * @param {Object} data - { description, date }
+ * @returns {Promise<Object>}
+ */
+export async function createAccomplishment(team_id, data) {
+  try {
+    return await apiFetch(`/api/teams/${team_id}/accomplishments`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  } catch {
+    return localDb.createAccomplishment(team_id, data);
+  }
+}
+
+/**
+ * Updates an existing accomplishment.
+ * @param {string} id
+ * @param {Object} data - { description, date }
+ * @returns {Promise<Object>}
+ */
+export async function updateAccomplishment(id, data) {
+  try {
+    return await apiFetch(`/api/accomplishments/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  } catch {
+    return localDb.updateAccomplishment(id, data);
+  }
+}
+
+/**
+ * Deletes an accomplishment by ID.
+ * @param {string} id
+ * @returns {Promise<void>}
+ */
+export async function deleteAccomplishment(id) {
+  try {
+    await apiFetch(`/api/accomplishments/${id}`, { method: 'DELETE' });
+  } catch {
+    localDb.deleteAccomplishment(id);
   }
 }
