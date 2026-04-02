@@ -1,29 +1,14 @@
 /**
  * api.js
  *
- * API abstraction layer. Each function attempts the real backend first.
- * On failure it falls back to localDb.js which operates on an in-memory
- * copy of database.json.
+ * API abstraction layer that uses localDb.js exclusively.
+ * All functions operate on an in-memory copy of database.json persisted to localStorage.
  *
  * All functions return objects in the resolved shape (foreign keys
- * replaced with nested objects), regardless of whether the real API
- * or the local fallback was used.
+ * replaced with nested objects).
  */
 
 import { localDb } from './localDb';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-async function apiFetch(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
-  if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-  return response.json();
-}
 
 // ─── Individuals ──────────────────────────────────────────────────────────────
 
@@ -32,12 +17,7 @@ async function apiFetch(path, options = {}) {
  * @returns {Promise<Array>}
  */
 export async function fetchIndividuals() {
-  try {
-    const data = await apiFetch('/api/individuals');
-    return Array.isArray(data) ? data : localDb.getIndividuals();
-  } catch {
-    return localDb.getIndividuals();
-  }
+  return localDb.getIndividuals();
 }
 
 /**
@@ -46,11 +26,7 @@ export async function fetchIndividuals() {
  * @returns {Promise<Object>}
  */
 export async function fetchIndividual(id) {
-  try {
-    return await apiFetch(`/api/individuals/${id}`);
-  } catch {
-    return localDb.getIndividual(id);
-  }
+  return localDb.getIndividual(id);
 }
 
 /**
@@ -59,14 +35,7 @@ export async function fetchIndividual(id) {
  * @returns {Promise<Object>}
  */
 export async function createIndividual(data) {
-  try {
-    return await apiFetch('/api/individuals', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  } catch {
-    return localDb.createIndividual(data);
-  }
+  return localDb.createIndividual(data);
 }
 
 /**
@@ -76,14 +45,7 @@ export async function createIndividual(data) {
  * @returns {Promise<Object>}
  */
 export async function updateIndividual(id, data) {
-  try {
-    return await apiFetch(`/api/individuals/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-  } catch {
-    return localDb.updateIndividual(id, data);
-  }
+  return localDb.updateIndividual(id, data);
 }
 
 /**
@@ -92,11 +54,7 @@ export async function updateIndividual(id, data) {
  * @returns {Promise<void>}
  */
 export async function deleteIndividual(id) {
-  try {
-    await apiFetch(`/api/individuals/${id}`, { method: 'DELETE' });
-  } catch {
-    localDb.deleteIndividual(id);
-  }
+  return localDb.deleteIndividual(id);
 }
 
 // ─── Teams ────────────────────────────────────────────────────────────────────
@@ -106,12 +64,7 @@ export async function deleteIndividual(id) {
  * @returns {Promise<Array>}
  */
 export async function fetchTeams() {
-  try {
-    const data = await apiFetch('/api/teams');
-    return Array.isArray(data) ? data : localDb.getTeams();
-  } catch {
-    return localDb.getTeams();
-  }
+  return localDb.getTeams();
 }
 
 /**
@@ -120,11 +73,7 @@ export async function fetchTeams() {
  * @returns {Promise<Object>}
  */
 export async function fetchTeam(id) {
-  try {
-    return await apiFetch(`/api/teams/${id}`);
-  } catch {
-    return localDb.getTeam(id);
-  }
+  return localDb.getTeam(id);
 }
 
 /**
@@ -133,14 +82,7 @@ export async function fetchTeam(id) {
  * @returns {Promise<Object>}
  */
 export async function createTeam(data) {
-  try {
-    return await apiFetch('/api/teams', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  } catch {
-    return localDb.createTeam(data);
-  }
+  return localDb.createTeam(data);
 }
 
 /**
@@ -150,14 +92,7 @@ export async function createTeam(data) {
  * @returns {Promise<Object>}
  */
 export async function updateTeam(id, data) {
-  try {
-    return await apiFetch(`/api/teams/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-  } catch {
-    return localDb.updateTeam(id, data);
-  }
+  return localDb.updateTeam(id, data);
 }
 
 /**
@@ -166,11 +101,7 @@ export async function updateTeam(id, data) {
  * @returns {Promise<void>}
  */
 export async function deleteTeam(id) {
-  try {
-    await apiFetch(`/api/teams/${id}`, { method: 'DELETE' });
-  } catch {
-    localDb.deleteTeam(id);
-  }
+  return localDb.deleteTeam(id);
 }
 
 // ─── Team Members ─────────────────────────────────────────────────────────────
@@ -182,14 +113,7 @@ export async function deleteTeam(id) {
  * @returns {Promise<Object>} The updated team
  */
 export async function addMemberToTeam(team_id, individual_id) {
-  try {
-    return await apiFetch(`/api/teams/${team_id}/members`, {
-      method: 'POST',
-      body: JSON.stringify({ individual_id }),
-    });
-  } catch {
-    return localDb.addMemberToTeam(team_id, individual_id);
-  }
+  return localDb.addMemberToTeam(team_id, individual_id);
 }
 
 /**
@@ -199,13 +123,7 @@ export async function addMemberToTeam(team_id, individual_id) {
  * @returns {Promise<Object>} The updated team
  */
 export async function removeMemberFromTeam(team_id, individual_id) {
-  try {
-    return await apiFetch(`/api/teams/${team_id}/members/${individual_id}`, {
-      method: 'DELETE',
-    });
-  } catch {
-    return localDb.removeMemberFromTeam(team_id, individual_id);
-  }
+  return localDb.removeMemberFromTeam(team_id, individual_id);
 }
 
 /**
@@ -214,11 +132,7 @@ export async function removeMemberFromTeam(team_id, individual_id) {
  * @returns {Promise<Array>}
  */
 export async function fetchTeamsForIndividual(individual_id) {
-  try {
-    return await apiFetch(`/api/individuals/${individual_id}/teams`);
-  } catch {
-    return localDb.getTeamsForIndividual(individual_id);
-  }
+  return localDb.getTeamsForIndividual(individual_id);
 }
 
 // ─── Accomplishments ──────────────────────────────────────────────────────────
@@ -229,11 +143,7 @@ export async function fetchTeamsForIndividual(individual_id) {
  * @returns {Promise<Array>}
  */
 export async function fetchAccomplishments(team_id) {
-  try {
-    return await apiFetch(`/api/teams/${team_id}/accomplishments`);
-  } catch {
-    return localDb.getAccomplishments(team_id);
-  }
+  return localDb.getAccomplishments(team_id);
 }
 
 /**
@@ -243,14 +153,7 @@ export async function fetchAccomplishments(team_id) {
  * @returns {Promise<Object>}
  */
 export async function createAccomplishment(team_id, data) {
-  try {
-    return await apiFetch(`/api/teams/${team_id}/accomplishments`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  } catch {
-    return localDb.createAccomplishment(team_id, data);
-  }
+  return localDb.createAccomplishment(team_id, data);
 }
 
 /**
@@ -260,14 +163,7 @@ export async function createAccomplishment(team_id, data) {
  * @returns {Promise<Object>}
  */
 export async function updateAccomplishment(id, data) {
-  try {
-    return await apiFetch(`/api/accomplishments/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-  } catch {
-    return localDb.updateAccomplishment(id, data);
-  }
+  return localDb.updateAccomplishment(id, data);
 }
 
 /**
@@ -276,9 +172,5 @@ export async function updateAccomplishment(id, data) {
  * @returns {Promise<void>}
  */
 export async function deleteAccomplishment(id) {
-  try {
-    await apiFetch(`/api/accomplishments/${id}`, { method: 'DELETE' });
-  } catch {
-    localDb.deleteAccomplishment(id);
-  }
+  return localDb.deleteAccomplishment(id);
 }

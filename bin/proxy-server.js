@@ -48,7 +48,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Parse request path: /api/{endpoint_name}
+  // Parse request path: /api/{endpoint_name}/{remainder_path}
   const parsedUrl = url.parse(req.url);
   const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
 
@@ -56,16 +56,16 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       message: 'Development CORS Proxy Server',
-      usage: 'GET /api/{endpoint_name}',
+      usage: 'GET /api/{endpoint_name}[/path]',
       endpoints: Object.keys(endpoints).map(name => `http://localhost:${PORT}/api/${name}`)
     }, null, 2));
     return;
   }
 
   const endpointName = pathParts[1];
-  const targetUrl = endpoints[endpointName] + (parsedUrl.search || '');
+  const baseUrl = endpoints[endpointName];
 
-  if (!targetUrl) {
+  if (!baseUrl) {
     res.writeHead(404, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       error: `Unknown endpoint: ${endpointName}`,
@@ -74,7 +74,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  console.log(`${req.method} /api/${endpointName} -> ${targetUrl}`);
+  // Build the target URL with remaining path segments
+  const remainingPath = pathParts.slice(2).join('/');
+  const targetUrl = baseUrl.replace(/\/$/, '') + (remainingPath ? '/' + remainingPath : '') + (parsedUrl.search || '');
+
+  console.log(`${req.method} /api/${endpointName}${remainingPath ? '/' + remainingPath : ''} -> ${targetUrl}`);
 
   // Parse target URL
   const target = url.parse(targetUrl);

@@ -409,7 +409,9 @@ function TeamPage() {
         </div>
         <div className="team-header__meta">
           <span className="team-header__org">{team.organization}</span>
-          <span className="team-header__lead">Led by {team.team_lead.name}</span>
+          <span className="team-header__lead">
+            Led by {team.team_lead?.name || members[0]?.name || "Unknown"}
+          </span>
         </div>
       </header>
 

@@ -26,19 +26,28 @@ class Achievement:
 
 def connect_to_db(collection_name: str) -> Collection:
     # Connect to MongoDB/DocumentDB and return the specified collection
-    host = "172.17.0.1"
-    port = 27017
+    host = os.environ.get("MONGO_HOST", "172.17.0.1")
+    port = int(os.environ.get("MONGO_PORT", "27017"))
     db_name = "TeamManagement"
-    user = None
-    password = None
-    is_local = False
+    user = os.environ.get("MONGO_USER", "").strip()
+    password = os.environ.get("MONGO_PASS", "").strip()
+    is_local = os.environ.get("IS_LOCAL", "false").lower() == "true"
 
     if user and password:
         uri = f"mongodb://{user}:{password}@{host}:{port}/{db_name}"
     else:
         uri = f"mongodb://{host}:{port}/{db_name}"
 
-    client = MongoClient(uri, tls=not is_local)
+    try:
+        # Create client with connection timeout
+        client = MongoClient(uri, tls=not is_local, serverSelectionTimeoutMS=5000, connectTimeoutMS=10000)
+        # Verify the connection works
+        client.admin.command('ping')
+        print(f"Connected to MongoDB at {host}:{port}/{db_name}")
+    except Exception as e:
+        print(f"MongoDB connection error: {e}")
+        raise
+    
     db = client[db_name]
     collection: Collection = db[collection_name]
 
@@ -123,25 +132,140 @@ class AchievementService:
 # ─── Lambda Handler ───────────────────────────────────────────────────────────
 
 def handler(event: dict = None, context: object = None) -> dict:
-    # AWS Lambda handler that returns all achievements.
-    service = AchievementService()
-    achievements = service.get_all()
-
-    body = [
-        {
-            "id": achievement.id,
-            "description": achievement.description,
-            "date": achievement.date,
-            "team_id": achievement.team_id,
+    """
+    AWS Lambda handler for achievements API (Lambda Function URL format).
+    Supports GET (all/by-id), POST (create), PUT (update), DELETE operations.
+    """
+    try:
+        service = AchievementService()
+        
+        # Parse Lambda Function URL event format
+        http_method = event.get("requestContext", {}).get("http", {}).get("method", "GET") if event else "GET"
+        raw_path = event.get("rawPath", "") if event else ""
+        body = event.get("body", "") if event else ""
+        
+        # Parse path: /achievements or /achievements/{id}
+        path_parts = [p for p in raw_path.split('/') if p]
+        resource = path_parts[0] if path_parts else ""
+        achievement_id = path_parts[1] if len(path_parts) > 1 else None
+        
+        # Validate it's the achievements endpoint
+        if resource != "achievements":
+            return {
+                "statusCode": 404,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"error": "Endpoint not found"}),
+            }
+        
+        # GET /achievements - Get all achievements
+        if http_method == "GET" and not achievement_id:
+            achievements = service.get_all()
+            body = [
+                {
+                    "id": achievement.id,
+                    "description": achievement.description,
+                    "date": achievement.date,
+                    "team_id": achievement.team_id,
+                }
+                for achievement in achievements
+            ]
+            return {
+                "statusCode": 200,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps(body),
+            }
+        
+        # GET /achievements/{id} - Get single achievement
+        elif http_method == "GET" and achievement_id:
+            achievement = service.get_by_id(achievement_id)
+            if not achievement:
+                return {
+                    "statusCode": 404,
+                    "headers": {"Content-Type": "application/json"},
+                    "body": json.dumps({"error": "Achievement not found"}),
+                }
+            return {
+                "statusCode": 200,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({
+                    "id": achievement.id,
+                    "description": achievement.description,
+                    "date": achievement.date,
+                    "team_id": achievement.team_id,
+                }),
+            }
+        
+        # POST /achievements - Create new achievement
+        elif http_method == "POST":
+            print(f"POST request body: {body}")
+            request_body = json.loads(body or "{}")
+            print(f"Parsed body: {request_body}")
+            achievement = Achievement(
+                description=request_body.get("description"),
+                date=request_body.get("date"),
+                team_id=request_body.get("team_id"),
+            )
+            print(f"Creating achievement: description={achievement.description}, date={achievement.date}, team_id={achievement.team_id}")
+            achievement_id = service.create(achievement)
+            print(f"Achievement created with ID: {achievement_id}")
+            return {
+                "statusCode": 201,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"id": achievement_id, "message": "Achievement created"}),
+            }
+        
+        # PUT /achievements/{id} - Update achievement
+        elif http_method == "PUT" and achievement_id:
+            request_body = json.loads(body or "{}")
+            achievement = Achievement(
+                description=request_body.get("description"),
+                date=request_body.get("date"),
+                team_id=request_body.get("team_id"),
+            )
+            updated = service.update(achievement_id, achievement)
+            if not updated:
+                return {
+                    "statusCode": 404,
+                    "headers": {"Content-Type": "application/json"},
+                    "body": json.dumps({"error": "Achievement not found"}),
+                }
+            return {
+                "statusCode": 200,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"message": "Achievement updated"}),
+            }
+        
+        # DELETE /achievements/{id} - Delete achievement
+        elif http_method == "DELETE" and achievement_id:
+            deleted = service.delete(achievement_id)
+            if not deleted:
+                return {
+                    "statusCode": 404,
+                    "headers": {"Content-Type": "application/json"},
+                    "body": json.dumps({"error": "Achievement not found"}),
+                }
+            return {
+                "statusCode": 200,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"message": "Achievement deleted"}),
+            }
+        
+        # Method not allowed
+        else:
+            return {
+                "statusCode": 405,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"error": "Method not allowed"}),
+            }
+    
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {
+            "statusCode": 500,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": str(e)}),
         }
-        for achievement in achievements
-    ]
-
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(body),
-    }
 
 
 if __name__ == "__main__":
