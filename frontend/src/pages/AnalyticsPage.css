@@ -7,21 +7,319 @@
   background-color: #0f1117;
   color: #e2e8f0;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
-.analytics-page__title {
+.analytics-header {
+  margin-bottom: 3rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.analytics-title {
   font-size: 2.5rem;
   font-weight: 700;
   color: #f0f4ff;
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
 }
 
-.analytics-page__message {
+.analytics-subtitle {
   font-size: 1.1rem;
   color: #94a3b8;
   margin: 0;
+}
+
+.analytics-main {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   Sections
+   ============================================================ */
+
+.analytics-section {
+  margin-bottom: 3rem;
+  background-color: #161b27;
+  border: 1px solid #1e2535;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  margin: 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #1e2535;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #1e2535;
+}
+
+.section-header .section-title {
+  margin: 0;
+  padding: 0;
+  border: none;
+  flex: 1;
+}
+
+.section-toggle {
+  background: transparent;
+  border: 1px solid #6c63ff;
+  color: #6c63ff;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.section-toggle:hover {
+  background-color: #6c63ff;
+  color: #fff;
+}
+
+.section-note {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin: 1rem 0 0;
+  font-style: italic;
+}
+
+/* ============================================================
+   Metrics Grid
+   ============================================================ */
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.metric-card {
+  background-color: #0f1117;
+  border: 1px solid #1e2535;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.metric-card:hover {
+  border-color: #6c63ff;
+  background-color: rgba(108, 99, 255, 0.05);
+}
+
+.metric-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #6c63ff;
+  margin-bottom: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Tables
+   ============================================================ */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.analytics-table thead {
+  background-color: #0f1117;
+  border-bottom: 2px solid #1e2535;
+}
+
+.analytics-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #a78bfa;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.analytics-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #1e2535;
+  color: #cbd5e0;
+}
+
+.analytics-table tbody tr:hover {
+  background-color: #1a202c;
+}
+
+.member-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.member-list li {
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.empty-value {
+  color: #64748b;
+  font-style: italic;
+}
+
+/* ============================================================
+   Badges
+   ============================================================ */
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge--distributed {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: #d8b4fe;
+}
+
+.badge--colocated {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.badge--direct {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.badge--admin {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.badge--employee {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #fed7aa;
+}
+
+.badge--non-direct {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #fed7aa;
+}
+
+.badge--exceeds {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+.badge--below {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+/* ============================================================
+   Achievements Section
+   ============================================================ */
+
+.month-group {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #1e2535;
+}
+
+.month-group:last-child {
+  border-bottom: none;
+}
+
+.month-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #a78bfa;
+  margin: 0 0 1rem;
+}
+
+.accomplishments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.accomplishment-item {
+  background-color: #0f1117;
+  border-left: 3px solid #6c63ff;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+
+.accomplishment-date {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.accomplishment-description {
+  color: #cbd5e0;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .analytics-page {
+    padding: 1rem;
+  }
+
+  .analytics-title {
+    font-size: 1.8rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .analytics-section {
+    padding: 1.5rem;
+  }
+
+  .analytics-table {
+    font-size: 0.85rem;
+  }
+
+  .analytics-table th,
+  .analytics-table td {
+    padding: 0.75rem 0.5rem;
+  }
 }
