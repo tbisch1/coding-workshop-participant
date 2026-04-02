@@ -163,6 +163,7 @@ echo -e "[2/4] Checking LocalStack..."
 # Use free tier only
 export LOCALSTACK_ACTIVATE_PRO=0
 export LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT=1
+export IMAGE_NAME=localstack/localstack:4.12.0
 
 # Check if localstack is installed
 if ! command -v localstack &> /dev/null; then
