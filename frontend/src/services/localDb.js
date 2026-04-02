@@ -30,7 +30,18 @@ let team_individuals = (stored?.team_individuals ?? seed.team_individuals).map(t
 let accomplishments = (stored?.accomplishments ?? seed.accomplishments).map(a => ({ ...a }));
 
 let nextId = 1000; // Starting ID for new records to avoid seed collisions
-const genId = () => String(++nextId);
+const getMaxId = () => {
+  const allIds = [
+    ...individuals.map(i => parseInt(i.id, 10)),
+    ...teams.map(t => parseInt(t.id, 10)),
+    ...team_individuals.map(ti => parseInt(ti.id, 10)),
+    ...accomplishments.map(a => parseInt(a.id, 10)),
+  ].filter(id => !isNaN(id));
+  
+  return allIds.length > 0 ? Math.max(...allIds) : nextId - 1;
+};
+
+const genId = () => String(getMaxId() + 1);
 
 // Persist all collections to localStorage after every write
 function persist() {
